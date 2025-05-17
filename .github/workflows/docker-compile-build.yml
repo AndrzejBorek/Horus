@@ -36,14 +36,10 @@ jobs:
           /kaniko/executor --dockerfile="./docker/Dockerfile.compile" \
             --context="${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}" \
             --destination="$DOCKER_IMAGE_NAME:$(echo ${GITHUB_SHA} | head -c 7)" \
-            ${{ env.KANIKO_CACHE_ARGS }} \
-            --push-retry 5
-
-          /kaniko/executor --dockerfile="./docker/Dockerfile.compile" \
-            --context="${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}" \
             --destination="$DOCKER_IMAGE_NAME:${{ github.ref_name }}-latest" \
             ${{ env.KANIKO_CACHE_ARGS }} \
             --push-retry 5
+
         env:
           GIT_USERNAME: ${{ github.actor }}
           GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
