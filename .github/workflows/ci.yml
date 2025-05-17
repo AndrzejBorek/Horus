@@ -25,6 +25,7 @@ jobs:
     container:
       image: aborekabits/horus-openjdk-17:DEVOPS-2-latest
     needs: test
+    steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
