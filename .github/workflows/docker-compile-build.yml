@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - DEVOPS-1
+      - DEVOPS-2
     paths:
       - docker/Dockerfile.compile
       - .github/workflows/docker-compile-build.yml

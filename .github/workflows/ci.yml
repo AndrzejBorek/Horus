@@ -1,0 +1,41 @@
+Name: Test and build spring project.
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: Run tests on spring project.
+    runs-on: ubuntu-latest
+    container:
+      image: aborekabits/horus-openjdk-17:DEVOPS-2-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Regenerate gradle
+        run: gradle wrapper --gradle-version $GRADLE_VERSION
+
+      - name: Run tests
+        run: ./gradlew test
+
+  build:
+    name: Build sprint project jar.
+    runs-on: ubuntu-latest
+    container:
+      image: aborekabits/horus-openjdk-17:DEVOPS-2-latest
+    needs: test
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Regenerate gradle
+        run: gradle wrapper --gradle-version $GRADLE_VERSION
+
+      - name: Build project
+        run: ./gradlew build -x test
+      
+      - name: Save artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-jar
+          path: build/libs/*.jar
