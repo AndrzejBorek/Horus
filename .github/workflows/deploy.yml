@@ -12,6 +12,7 @@ on:
 jobs:
   deploy:
     name: Push image with jar to dockerhub
+    runs-on: ubuntu-latest
     container:
       image: gcr.io/kaniko-project/executor:v1.20.0-debug
     needs: build
