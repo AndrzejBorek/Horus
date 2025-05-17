@@ -1,7 +1,10 @@
-name: Test and build spring project.
+name: Test and build spring project
 on:
   push:
   pull_request:
+
+env:
+  KANIKO_CACHE_ARGS: "--cache=true --cache-copy-layers=true --cache-ttl=48h"
 
 jobs:
   configure-gradle:
@@ -44,12 +47,12 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build
-        run: ./gradlew Build
+        run: ./gradlew build -PbuildCommit=$(echo ${GITHUB_SHA} | head -c 7)
 
       - name: Save artifacts
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: horus-jar
+          name: horus-app
           path: build/libs/*.jar
 
   test:
@@ -57,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: aborekabits/horus-openjdk-17:DEVOPS-2-latest
-    needs: [configure-gradle, build]
+    needs: configure-gradle
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

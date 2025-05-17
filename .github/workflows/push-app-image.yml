@@ -1,0 +1,45 @@
+name: Push app image to dockerhub.
+on:
+  push:
+    branches:
+      - main
+      - DEVOPS-2
+
+jobs:
+  push-app-image:
+    name: Push image with jar to dockerhub
+    container:
+      image: gcr.io/kaniko-project/executor:v1.20.0-debug
+    needs: build
+    permissions:
+      contents: read
+    steps:
+      - name: Build and push image to dockerhub registry.
+        uses: dawdd6/action-download-artifacts@v6
+        with:
+          workflow: ci.yml
+          name: horus-app
+          workflow_conclussion: success
+          branch: DEVOPS-2
+        run: |
+          cat <<EOF > /kaniko/.docker/config.json
+          {
+            "auths": {
+              "https://index.docker.io/v1/": {
+                "auth": "$(echo -n "${{ secrets.DOCKERHUB_LOGIN }}:${{ secrets.DOCKERHUB_TOKEN }}" | base64 )"
+              }
+            }
+          }
+          EOF
+
+          /kaniko/executor --dockerfile="./docker/Dockerfile.runtime" \
+            --context="${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}" \
+            --destination="$DOCKER_IMAGE_NAME:$(echo ${GITHUB_SHA} | head -c 7)" \
+            --destination="$DOCKER_IMAGE_NAME:${{ github.ref_name }}-latest" \
+            ${{ env.KANIKO_CACHE_ARGS }} \
+            --push-retry 5
+
+        env:
+          GIT_USERNAME: ${{ github.actor }}
+          GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          DOCKER_IMAGE_NAME: "aborekabits/horus-app
