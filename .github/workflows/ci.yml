@@ -1,4 +1,4 @@
-Name: Test and build spring project.
+name: Test and build spring project.
 on:
   push:
   pull_request:
