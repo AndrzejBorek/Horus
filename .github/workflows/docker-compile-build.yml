@@ -1,0 +1,50 @@
+name: Build compilation docker image.
+
+on:
+  push:
+    branches:
+      - main
+      - DEVOPS-1
+    paths:
+      - docker/Dockerfile.compile
+      - ./github/workflows/docker-compile-build.yml
+
+env:
+  KANIKO_CACHE_ARGS: "--cache=true --cache-copy-layers=true --cache-ttl=48h"
+
+jobs:
+  build-and-push-compilation-image:
+    name: Build and push docker image for compilation. Pushes to dockerhub.
+    runs-on: ubuntu-latest
+    container:
+      image: gcr.io/kaniko-project/executor:v1.20.0-debug
+    permissions:
+      content: read
+    steps:
+      - name: Build and push image to dockerhub registry.
+        run: |
+          cat <<EOF > /kaniko/.docker/config.json
+          {
+            "auths": {
+              "https://index.docker.io/v1/": {
+                "auth": "$(echo -n "${{ secrets.DOCKERHUB_LOGIN }}:${{ secrets.DOCKERHUB_TOKEN }}" | base64 )"
+              }
+            }
+          }
+          EOF
+          
+          /kaniko/executor --dockerfile="./docker/Dockerfile.compile" \
+            --context="${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}" \
+            --destination="$DOCKER_IMAGE_NAME:$(echo ${GITHUB_SHA} | head -c 7)" \
+            ${{ env.KANIKO_CACHE_ARGS }} \
+            --push-retry 5
+
+          /kaniko/executor --dockerfile="./docker/Dockerfile.compile" \
+            --context="${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}" \
+            --destination="$DOCKER_IMAGE_NAME:${{ github.ref_name }}-latest" \
+            ${{ env.KANIKO_CACHE_ARGS }} \
+            --push-retry 5
+        env:
+          GIT_USERNAME: ${{ github.actor }}
+          GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          DOCKER_IMAGE_NAME: "aborekabits/horus-openjdk-17"
