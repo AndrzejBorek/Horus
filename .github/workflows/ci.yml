@@ -23,9 +23,37 @@ jobs:
           path: |
             gradlew
             gradle/wrapper
+  build:
+    name: Build project
+    runs-on: ubuntu-latest
 
-  test-and-build:
-    name: Test and build spring project.
+container:
+      image: aborekabits/horus-openjdk-17:DEVOPS-2-latest
+    needs: configure-gradle
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download gradle wrapper artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: gradle-wrapper-artifacts
+          path: ./
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Test
+        run: ./gradlew test
+
+      - name: Save artifacts
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: horus-jar
+          path: build/libs/*.jar
+
+  test:
+    name: Test spring project.
     runs-on: ubuntu-latest
     container:
       image: aborekabits/horus-openjdk-17:DEVOPS-2-latest
@@ -43,11 +71,5 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Test and build
+      - name: Test
         run: ./gradlew test
-
-      - name: Save artifacts
-        uses: actions/upload-artifact@v4.6.2
-        with:
-          name: horus-jar
-          path: build/libs/*.jar
