@@ -3,9 +3,6 @@ on:
   push:
   pull_request:
 
-env:
-  KANIKO_CACHE_ARGS: "--cache=true --cache-copy-layers=true --cache-ttl=48h"
-
 jobs:
   configure-gradle:
     name: Run gradle wrapper
@@ -103,9 +100,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Push docker image
         run: |
           docker push "$DOCKER_IMAGE_NAME:$(echo ${GITHUB_SHA} | head -c 7)"
           docker push "$DOCKER_IMAGE_NAME:${{ github.ref_name }}-latest"
     env:
+      GIT_USERNAME: ${{ github.actor }}
+      GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
       DOCKER_IMAGE_NAME: "aborekabits/horus-app"
