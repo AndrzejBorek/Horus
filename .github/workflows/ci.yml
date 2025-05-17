@@ -27,7 +27,7 @@ jobs:
     name: Build project
     runs-on: ubuntu-latest
 
-container:
+    container:
       image: aborekabits/horus-openjdk-17:DEVOPS-2-latest
     needs: configure-gradle
     steps:
