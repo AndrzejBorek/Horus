@@ -53,11 +53,11 @@ jobs:
           path: build/libs/*.jar
 
   test:
-    name: Test spring project.
+    name: Test project.
     runs-on: ubuntu-latest
     container:
       image: aborekabits/horus-openjdk-17:DEVOPS-2-latest
-    needs: configure-gradle
+    needs: [configure-gradle, build]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
