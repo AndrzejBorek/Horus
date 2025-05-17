@@ -1,3 +1,6 @@
-FROM openjdk:17 AS base
+FROM ubuntu:24.04 AS base
+
+RUN apt update && \
+    apt install -y  --no-install-recommends openjdk-17-jdk
 
 ADD build/libs/*.jar /opt 
