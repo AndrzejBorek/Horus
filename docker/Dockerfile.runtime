@@ -1,5 +1,8 @@
 FROM ubuntu:24.04 AS base
 
+ARG BUILD_COMMIT
+ENV BUILD_COMMIT=$BUILD_COMMIT
+
 RUN apt update && \
     apt install -y  --no-install-recommends openjdk-17-jdk
 
