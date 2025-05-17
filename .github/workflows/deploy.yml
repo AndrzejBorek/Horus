@@ -4,9 +4,13 @@ on:
     branches:
       - main
       - DEVOPS-2
+    workflow_run:
+      workflows: ["Test and build spring project"]
+      types:
+        - completed
 
 jobs:
-  push-app-image:
+  deploy:
     name: Push image with jar to dockerhub
     container:
       image: gcr.io/kaniko-project/executor:v1.20.0-debug
@@ -14,13 +18,16 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Build and push image to dockerhub registry.
-        uses: dawdd6/action-download-artifacts@v6
+      - name: Download jar from build workflow.
+        uses: actions/download-artifact@v4
         with:
-          workflow: ci.yml
           name: horus-app
-          workflow_conclussion: success
-          branch: DEVOPS-2
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: List for test
+        run: |
+          ls -la
+      - name:
         run: |
           cat <<EOF > /kaniko/.docker/config.json
           {

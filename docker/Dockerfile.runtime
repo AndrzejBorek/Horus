@@ -1,1 +1,3 @@
 FROM openjdk:17 AS base
+
+ADD build/libs/*.jar /opt 
