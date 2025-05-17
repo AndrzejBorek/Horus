@@ -19,7 +19,7 @@ jobs:
     container:
       image: gcr.io/kaniko-project/executor:v1.20.0-debug
     permissions:
-      content: read
+      contents: read
     steps:
       - name: Build and push image to dockerhub registry.
         run: |
