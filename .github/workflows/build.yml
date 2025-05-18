@@ -82,7 +82,7 @@ jobs:
   deploy:
     name: Push image with jar to dockerhub
     runs-on: ubuntu-latest
-    if: github.ref_name == 'main' || github.ref_name == 'DEVOPS-4'
+    if: github.ref_name == 'main'
     needs: [build, test]
     permissions:
       contents: read
