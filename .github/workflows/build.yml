@@ -3,10 +3,6 @@ on:
   push:
   pull_request:
 
-env:
-  HORUS_APP_HOST_PORT: 8080
-  HORUS_APP_CONTAINER_PORT: 8080
-
 jobs:
   configure-gradle:
     name: Run gradle wrapper
@@ -79,12 +75,6 @@ jobs:
       - name: Test
         run: ./gradlew test
   
-  integration-test:
-    name: Run integration tests
-    runs-on: ubuntu-latest
-    steps:
-      - docker run -p $HORUS_APP_HOST_PORT:$HORUS_APP_CONTAINER_PORT
-    -
   deploy:
     name: Push image with jar to dockerhub
     runs-on: ubuntu-latest
