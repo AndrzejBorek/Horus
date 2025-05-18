@@ -7,7 +7,10 @@ plugins {
 group = 'com.example'
 
 def buildCommit = project.hasProperty('buildCommit') ? project.property('buildCommit').take(7) : 'local'
-version = '0.0.1+' + buildCommit
+versionFile = file('version')
+def baseVersionLine = versionFile.readLines().find { it.startsWith('version=) }
+def baseVersion = baseVersionLine?.split('=')[1]?.trim() ?: '0.0.1'
+version = "${baseVersion}-${buildCommit}"
 
 java {
 	toolchain {
