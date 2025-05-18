@@ -49,7 +49,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build
-        run: ./gradlew build -PbuildCommit=$(echo ${GITHUB_SHA} | head -c 7)
+        run: ./gradlew assemble -PbuildCommit=$(echo ${GITHUB_SHA} | head -c 7)
 
       - name: Save artifacts
         uses: actions/upload-artifact@v4.6.2
