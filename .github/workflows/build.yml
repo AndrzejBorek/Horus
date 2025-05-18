@@ -82,7 +82,7 @@ jobs:
   deploy:
     name: Push image with jar to dockerhub
     runs-on: ubuntu-latest
-    if: github.ref_name == 'main'
+    if: github.ref_name == 'main' || startsWith(github.ref_name, 'preprod-')
     needs: [build, test]
     permissions:
       contents: read
@@ -97,7 +97,7 @@ jobs:
           path: build/libs/
 
       - name: Builds docker image
-        run: docker build --build-arg BUILD_COMMIT=$(echo ${GITHUB_SHA} | head -c 7) -t "$DOCKER_IMAGE_NAME:$(echo ${GITHUB_SHA} | head -c 7)" -t "$DOCKER_IMAGE_NAME:${{ github.ref_name }}-latest" --file docker/Dockerfile.runtime .
+        run: docker build --build-arg BUILD_COMMIT=$(echo ${GITHUB_SHA} | head -c 7) -t "$DOCKER_IMAGE_NAME:${{ github.ref_name }}-$(echo ${GITHUB_SHA} | head -c 7)" -t "$DOCKER_IMAGE_NAME:${{ github.ref_name }}-latest" --file docker/Dockerfile.runtime .
 
       - name: Login to dockerhub
         uses: docker/login-action@v2
@@ -107,7 +107,7 @@ jobs:
 
       - name: Push docker image
         run: |
-          docker push "$DOCKER_IMAGE_NAME:$(echo ${GITHUB_SHA} | head -c 7)"
+          docker push "$DOCKER_IMAGE_NAME:${{ github.ref_name }}-$(echo ${GITHUB_SHA} | head -c 7)"
           docker push "$DOCKER_IMAGE_NAME:${{ github.ref_name }}-latest"
     env:
       GIT_USERNAME: ${{ github.actor }}
@@ -118,7 +118,7 @@ jobs:
     needs: [deploy]
     steps:
       - name: Run latest app
-        run: docker run -d -p $HORUS_APP_HOST_PORT:$HORUS_APP_CONTAINER_PORT --name ${HORUS_APP_NAME} "$DOCKER_IMAGE_NAME:$(echo ${GITHUB_SHA} | head -c 7)"
+        run: docker run -d -p $HORUS_APP_HOST_PORT:$HORUS_APP_CONTAINER_PORT --name ${HORUS_APP_NAME} "$DOCKER_IMAGE_NAME:${{ github.ref_name }}-$(echo ${GITHUB_SHA} | head -c 7)"
       
       - name: Test with some timeout to let app start
         run: |
