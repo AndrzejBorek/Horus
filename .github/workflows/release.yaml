@@ -11,18 +11,18 @@ on:
 jobs:
   release:
     name: Create release tag
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Read version
-      id: read_version
-      run: |
-        version=$(grep '^version=' version | cut -d= -f2)
-        echo "version=$version" >> $GITHUB_OUTPUT
+      - name: Read version
+        id: read_version
+        run: |
+          version=$(grep '^version=' version | cut -d= -f2)
+          echo "version=$version" >> $GITHUB_OUTPUT
 
-    - name: Tag commit
-      uses: tvdias/github-tagger@v0.0.1
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        tag: "v${{ steps.read_version.outputs.version }}"
+      - name: Tag commit
+        uses: tvdias/github-tagger@v0.0.1
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          tag: "v${{ steps.read_version.outputs.version }}"
