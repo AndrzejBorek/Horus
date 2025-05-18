@@ -6,5 +6,5 @@ ENV BUILD_COMMIT=$BUILD_COMMIT
 RUN apt update && \
     apt install -y  --no-install-recommends openjdk-17-jdk
 
-ADD build/libs/*.jar /opt/horus
+ADD build/libs/*.jar /opt/horus/
 ENTRYPOINT ["sh", "-c", "java -jar /opt/horus/Horus-*+${BUILD_COMMIT}.jar"]
