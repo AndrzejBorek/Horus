@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - DEVOPS-1
+      - DEVOPS-2
     paths:
       - docker/Dockerfile.compile
       - .github/workflows/docker-compile-build.yml
@@ -34,6 +34,7 @@ jobs:
           EOF
           
           /kaniko/executor --dockerfile="./docker/Dockerfile.compile" \
+            --build-arg BUILD_COMMIT=${GITHUB_SHA} \
             --context="${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}" \
             --destination="$DOCKER_IMAGE_NAME:$(echo ${GITHUB_SHA} | head -c 7)" \
             --destination="$DOCKER_IMAGE_NAME:${{ github.ref_name }}-latest" \
