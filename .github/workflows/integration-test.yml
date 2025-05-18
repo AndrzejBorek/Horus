@@ -5,7 +5,8 @@ on:
     branches:
       - main
   schedule:
-    - cron: '*/2 * * * *'
+    # Running every 24 hours at midnight
+    - cron: '0 0 * * *'
 
 env:
   HORUS_APP_HOST_PORT: 8080
