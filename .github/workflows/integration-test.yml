@@ -20,6 +20,10 @@ jobs:
     steps:
       - name: Run latest app
         run: docker run -p $HORUS_APP_HOST_PORT:$HORUS_APP_CONTAINER_PORT --name horus-app $DOCKER_IMAGE_NAME:main-latest
+      - name: Check container run
+        run: docker container list
+      - name: See startup logs
+        run: docker logs horus-app
       
       - name: Test with some timeout to let app start
         run: |
@@ -29,7 +33,7 @@ jobs:
               exit 0
             else
               echo "Waiting for startup"
-              sleep 3
+              sleep 5
             fi
           done
           echo "No response in time."
