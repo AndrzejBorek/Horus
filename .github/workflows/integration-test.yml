@@ -23,7 +23,7 @@ jobs:
       - name: Test with some timeout to let app start
         run: |
           for i in {1..10}; do
-            if curl -s https://localhost:$HORUS_APP_HOST_PORT | grep -q "Hello world Horus!"; then
+            if curl -s localhost:$HORUS_APP_HOST_PORT | grep -q "Hello world Horus!"; then
               echo "Expected message. Test passed."
               exit 0
             else
