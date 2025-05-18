@@ -6,7 +6,7 @@ on:
       - main
   schedule:
     # Running every 24 hours at midnight
-    - cron: '0 0 * * *'
+    - cron: '*/2 * * * *'
 
 env:
   HORUS_APP_HOST_PORT: 8080
