@@ -8,6 +8,9 @@ on:
     paths:
       - version
 
+permissions:
+  contents: write
+
 jobs:
   release:
     name: Create release tag
@@ -21,8 +24,7 @@ jobs:
         run: |
           version=$(grep '^version=' version | cut -d= -f2)
           echo "version=$version" >> $GITHUB_OUTPUT
-
-      - name: Tag commit
+      - name: Create tag
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "Github Action"
