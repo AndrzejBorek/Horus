@@ -23,7 +23,8 @@ jobs:
           echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Tag commit
-        uses: tvdias/github-tagger@v0.0.1
-        with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          tag: "v${{ steps.read_version.outputs.version }}"
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Github Action"
+          git tag -a "v${{ steps.read_version.outputs.version }}" -m "Number: ${{ github.run_number }}"
+          git push origin "v${{ steps.read_version.outputs.version }}"
