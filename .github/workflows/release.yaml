@@ -39,6 +39,6 @@ jobs:
         run: |
           gh release create "${TAG}" \
             --repo "${REPOSITORY}" \
-            --title "${REPOSITORY#*/} ${TAG#v}"" \
+            --title "${REPOSITORY#*/} ${TAG#v}" \
             --target ${{ github.ref_name }} \
             --notes "Docker image for release: https://hub.docker.com/r/${IMAGE}/tags?name=${{ github.ref_name }}-$(echo ${GITHUB_SHA} | head -c 7)"
